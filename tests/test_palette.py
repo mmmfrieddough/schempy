@@ -1,6 +1,8 @@
 import unittest
-from typing import Type, Dict
-from schempy.schematic import Block, Palette, BlockPalette
+from typing import Type
+
+from schempy import Block
+from schempy.components import BlockPalette, Palette
 
 
 class PaletteTestSuite(unittest.TestCase):

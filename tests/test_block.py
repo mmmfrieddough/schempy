@@ -1,7 +1,7 @@
 import dataclasses
 import unittest
 
-from schempy.schematic import Block
+from schempy import Block
 
 
 class TestBlock(unittest.TestCase):

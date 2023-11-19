@@ -6,8 +6,8 @@ from pathlib import Path
 import nbtlib
 from deepdiff import DeepDiff
 
+from schempy import Block, Entity, Schematic
 from schempy.constants import DATA_VERSION
-from schempy.schematic import Block, Entity, Schematic
 
 
 class TestSchematic(unittest.TestCase):
