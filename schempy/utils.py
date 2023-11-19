@@ -101,7 +101,7 @@ def python_to_nbt(data):
         return data
     elif isinstance(data, dict):
         return Compound({key: python_to_nbt(value) for key, value in data.items()})
-    elif isinstance(data, list):
+    elif isinstance(data, list) or isinstance(data, tuple):
         return List([python_to_nbt(element) for element in data])
     elif isinstance(data, bool):
         return Byte(1) if data else Byte(0)

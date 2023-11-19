@@ -21,7 +21,8 @@ class TestSchematic(unittest.TestCase):
         self.author = "mmmfrieddough"
         self.date = datetime.fromtimestamp(1700356414574 / 1000)
         self.required_mods = ["mod1", "mod2"]
-        self.metadata = {"test": {"test": "value", "number": 1}}
+        self.metadata = {"test": {"test": "value",
+                                  "number": 1, "list": ("one", "two")}}
 
         self.schematic = Schematic(self.width, self.height, self.length)
         self.schematic.offset = self.offset
@@ -146,6 +147,9 @@ class TestSchematic(unittest.TestCase):
     def test_load_schematic(self):
         for version, file_path in self.test_files.items():
             with self.subTest(version=version):
+                # Remove tuple from metadata, as conversion from NBT to Python does not preserve tuple type
+                self.metadata['test']['list'] = ["one", "two"]
+
                 schematic = Schematic.from_file(file_path)
                 self.assertEqual(schematic._width, self.width)
                 self.assertEqual(schematic._height, self.height)
