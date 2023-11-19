@@ -34,6 +34,10 @@ jobs:
           python-version: "3.x"
       - name: Install bump2version
         run: pip install bump2version
+      - name: Configure git
+        run: |
+          git config --local user.email "noreply@github.com"
+          git config --local user.name "GitHub Actions CI"
       - name: Bump version and push tag
         run: |
           bump2version patch --config-file .bumpversion.cfg
