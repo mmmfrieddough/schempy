@@ -80,8 +80,7 @@ class Schematic:
 
     def _prepare_metadata(self) -> Dict:
         """Prepare the metadata for saving."""
-        metadata = {key: nbtlib.String(value)
-                    for key, value in self.metadata.items()}
+        metadata = utils.python_to_nbt(self.metadata)
         metadata.update({
             'Name': nbtlib.String(self.name),
             'Author': nbtlib.String(self.author),
@@ -202,6 +201,7 @@ class Schematic:
 
     def _parse_metadata(self, metadata: dict) -> None:
         """Parse the metadata from the file."""
+        metadata = utils.nbt_to_python(metadata)
         if 'Name' in metadata:
             self.name = metadata['Name']
             del metadata['Name']

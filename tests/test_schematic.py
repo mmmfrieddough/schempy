@@ -21,7 +21,7 @@ class TestSchematic(unittest.TestCase):
         self.author = "mmmfrieddough"
         self.date = datetime.fromtimestamp(1700356414574 / 1000)
         self.required_mods = ["mod1", "mod2"]
-        self.metadata = {"test": "value"}
+        self.metadata = {"test": {"test": "value", "number": 1}}
 
         self.schematic = Schematic(self.width, self.height, self.length)
         self.schematic.offset = self.offset
