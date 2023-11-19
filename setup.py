@@ -2,8 +2,9 @@ from setuptools import setup, find_packages
 
 setup(
     name='SchemPy',
-    version='0.1.0',
+    use_scm_version=True,
     packages=find_packages(),
+    setup_requires=['setuptools_scm'],
     install_requires=[
         'nbtlib',
         'numpy'

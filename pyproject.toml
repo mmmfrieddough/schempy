@@ -1,0 +1,3 @@
+[tool.setuptools_scm]
+# Fallback version in case the git history is unavailable
+fallback_version = "0.1.0"
