@@ -177,6 +177,8 @@ class Schematic:
         return nbtlib.File(data)
 
     def save_to_file(self, file_path: Path, version: int = 3) -> None:
+        if not isinstance(file_path, Path):
+            raise TypeError("File path must be a Path object.")
         if not file_path.parent.exists():
             raise FileNotFoundError(
                 f"Directory {file_path.parent} does not exist.")
