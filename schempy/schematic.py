@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime
+from itertools import product
 from pathlib import Path
 from typing import Dict, Generic, List, Optional, TypeVar
 
@@ -7,10 +8,10 @@ import nbtlib
 import numpy as np
 from nbtlib import File
 
+import schempy.utils as utils
 from schempy.constants import DATA_VERSION, MINECRAFT_AIR
 from schempy.schema.v2 import SpongeV2
 from schempy.schema.v3 import SpongeV3
-import schempy.utils as utils
 
 
 @dataclass(frozen=True)
@@ -158,6 +159,10 @@ class Schematic:
         """Add an entity."""
         self._check_coordinates(entity.x, entity.y, entity.z)
         self._entities.append(entity)
+
+    def iter_block_positions(self):
+        """Iterator over every block position in the schematic, yielding (x, y, z) tuples."""
+        return product(range(self._width), range(self._height), range(self._length))
 
     def _prepare_metadata(self) -> Dict:
         """Prepare the metadata for saving."""
