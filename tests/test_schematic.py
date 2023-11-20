@@ -95,9 +95,9 @@ class TestSchematic(unittest.TestCase):
                 self.fail(diff_message)
 
     def test_initialization(self):
-        self.assertEqual(self.schematic._width, self.width)
-        self.assertEqual(self.schematic._height, self.height)
-        self.assertEqual(self.schematic._length, self.length)
+        self.assertEqual(self.schematic.width, self.width)
+        self.assertEqual(self.schematic.height, self.height)
+        self.assertEqual(self.schematic.length, self.length)
         self.assertEqual(self.schematic.offset, self.offset)
         self.assertEqual(self.schematic.data_version, self.data_version)
         self.assertEqual(self.schematic.name, self.name)
@@ -151,9 +151,9 @@ class TestSchematic(unittest.TestCase):
                 self.metadata['test']['list'] = ["one", "two"]
 
                 schematic = Schematic.from_file(file_path)
-                self.assertEqual(schematic._width, self.width)
-                self.assertEqual(schematic._height, self.height)
-                self.assertEqual(schematic._length, self.length)
+                self.assertEqual(schematic.width, self.width)
+                self.assertEqual(schematic.height, self.height)
+                self.assertEqual(schematic.length, self.length)
                 self.assertEqual(schematic.offset, self.offset)
                 self.assertEqual(schematic.data_version, self.data_version)
                 self.assertEqual(schematic.name, self.name)

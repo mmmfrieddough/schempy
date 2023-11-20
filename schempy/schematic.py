@@ -16,9 +16,9 @@ from .schema.v3 import SpongeV3
 
 class Schematic:
     def __init__(self, width: int, height: int, length: int):
-        self._width: int = utils.to_unsigned_short(width)
-        self._height: int = utils.to_unsigned_short(height)
-        self._length: int = utils.to_unsigned_short(length)
+        self.width: int = utils.to_unsigned_short(width)
+        self.height: int = utils.to_unsigned_short(height)
+        self.length: int = utils.to_unsigned_short(length)
 
         self.offset: List[int] = [0, 0, 0]
         self.data_version: int = DATA_VERSION
@@ -32,16 +32,16 @@ class Schematic:
         self._block_palette: BlockPalette = BlockPalette()
         self._block_palette.get_id(Block(MINECRAFT_AIR))
         self._block_data: np.ndarray = np.zeros(
-            (self._height, self._length, self._width), dtype=int)
+            (self.height, self.length, self.width), dtype=int)
         self._block_entities: List[Entity] = []
         self._biome_palette: Palette = Palette()
         self._biome_data: np.ndarray = np.zeros(
-            (self._height, self._length, self._width), dtype=int)
+            (self.height, self.length, self.width), dtype=int)
         self._entities: List[Entity] = []
 
     def _check_coordinates(self, x: int, y: int, z: int) -> None:
         """Check that the coordinates are within the schematic bounds."""
-        if not (0 <= x < self._width and 0 <= y < self._height and 0 <= z < self._length):
+        if not (0 <= x < self.width and 0 <= y < self.height and 0 <= z < self.length):
             raise ValueError("Coordinates out of range.")
 
     def get_block(self, x: int, y: int, z: int) -> Block:
@@ -76,7 +76,7 @@ class Schematic:
 
     def iter_block_positions(self):
         """Iterator over every block position in the schematic, yielding (x, y, z) tuples."""
-        return product(range(self._width), range(self._height), range(self._length))
+        return product(range(self.width), range(self.height), range(self.length))
 
     def _prepare_metadata(self) -> Dict:
         """Prepare the metadata for saving."""
@@ -112,9 +112,9 @@ class Schematic:
             'Version': 2,
             'DataVersion': self.data_version,
             'Metadata': metadata,
-            'Width': self._width,
-            'Height': self._height,
-            'Length': self._length,
+            'Width': self.width,
+            'Height': self.height,
+            'Length': self.length,
             'Offset': self.offset,
             'PaletteMax': len(self._block_palette.get_palette()),
             'Palette': block_palette,
@@ -152,9 +152,9 @@ class Schematic:
                 'Version': 3,
                 'DataVersion': self.data_version,
                 'Metadata': metadata,
-                'Width': self._width,
-                'Height': self._height,
-                'Length': self._length,
+                'Width': self.width,
+                'Height': self.height,
+                'Length': self.length,
                 'Offset': self.offset,
                 'Blocks': {
                     'Palette': block_palette,
@@ -254,7 +254,7 @@ class Schematic:
             schematic._parse_metadata(data['Metadata'])
         if 'BlockData' in data:
             schematic._block_palette.set_palette(data['Palette'])
-            shape = (schematic._height, schematic._length, schematic._width)
+            shape = (schematic.height, schematic.length, schematic.width)
             schematic._block_data = utils.varint_bytearray_to_numpy_array(
                 data['BlockData'], shape)
         if 'BlockEntities' in data:
@@ -263,11 +263,11 @@ class Schematic:
         if 'BiomeData' in data:
             schematic._biome_palette.set_palette(data['BiomePalette'])
             # Since version 2 schematics store biome data as a 2D array, we need to convert it to a 3D array
-            shape = (schematic._length, schematic._width)
+            shape = (schematic.length, schematic.width)
             biome_data = utils.varint_bytearray_to_numpy_array(
                 data['BiomeData'], shape)
             schematic._biome_data = np.repeat(
-                biome_data[np.newaxis, :, :], schematic._height, axis=0)
+                biome_data[np.newaxis, :, :], schematic.height, axis=0)
         if 'Entities' in data:
             schematic._entities = [cls._parse_entity(
                 entity, 2) for entity in data['Entities']]
@@ -293,7 +293,7 @@ class Schematic:
         # Get the optional fields
         if 'Metadata' in data:
             schematic._parse_metadata(data['Metadata'])
-        shape = (schematic._height, schematic._length, schematic._width)
+        shape = (schematic.height, schematic.length, schematic.width)
         if 'Blocks' in data:
             schematic._block_palette.set_palette(data['Blocks']['Palette'])
             schematic._block_data = utils.varint_bytearray_to_numpy_array(
