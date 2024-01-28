@@ -81,6 +81,8 @@ class BlockPalette(Palette[Block]):
             properties_str = properties_str[:-1]
             properties = {}
             for property_str in properties_str.split(','):
+                if property_str == '':
+                    continue
                 key, value = property_str.split('=')
                 properties[key] = value
             return Block(id, properties)
