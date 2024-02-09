@@ -33,15 +33,17 @@ class TestSchematic(unittest.TestCase):
         self.schematic.required_mods = self.required_mods
         self.schematic.metadata = self.metadata
 
-        self.schematic.set_block(2, 0, 1, Block(
-            "minecraft:grass_block", {"snowy": False}))
-        self.schematic.set_block(1, 1, 1, Block("minecraft:stone"))
-        self.schematic.set_block(0, 2, 1, Block("minecraft:chest", {
-                                 "facing": "north", "type": "single", "waterlogged": False}))
-        self.schematic.set_block(0, 3, 0, Block(
-            "minecraft:oak_log", {"axis": "x"}))
-        self.schematic.set_block(2, 3, 0, Block(
-            "minecraft:oak_log", {"axis": "y"}))
+        self.sample_blocks = [
+            ((2, 0, 1), Block("minecraft:grass_block", {"snowy": False})),
+            ((1, 1, 1), Block("minecraft:stone")),
+            ((0, 2, 1), Block("minecraft:chest", {
+             "facing": "north", "type": "single", "waterlogged": False})),
+            ((0, 3, 0), Block("minecraft:oak_log", {"axis": "x"})),
+            ((2, 3, 0), Block("minecraft:oak_log", {"axis": "y"}))
+        ]
+        for position, block in self.sample_blocks:
+            self.schematic.set_block(*position, block)
+
         self.schematic.add_block_entity(Entity(
             "minecraft:chest", 0, 2, 1, {"Items": [{"Slot": 13, "id": "minecraft:torch", "Count": 1}]}))
         self.schematic.set_biome(0, 0, 0, "minecraft:plains")
@@ -144,11 +146,12 @@ class TestSchematic(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.schematic.set_block(-1, -1, -1, Block("minecraft:stone"))
 
-    def test_load_schematic(self):
+    def test_load_schematic_basic(self):
         for version, file_path in self.test_files.items():
             with self.subTest(version=version):
                 # Remove tuple from metadata, as conversion from NBT to Python does not preserve tuple type
-                self.metadata['test']['list'] = ["one", "two"]
+                metadata = self.metadata.copy()
+                metadata['test']['list'] = ["one", "two"]
 
                 schematic = Schematic.from_file(file_path)
                 self.assertEqual(schematic.width, self.width)
@@ -161,7 +164,14 @@ class TestSchematic(unittest.TestCase):
                 self.assertEqual(schematic.date, self.date)
                 self.assertCountEqual(
                     schematic.required_mods, self.required_mods)
-                self.assertEqual(schematic.metadata, self.metadata)
+                self.assertEqual(schematic.metadata, metadata)
+
+    def test_load_schematic_blocks(self):
+        for version, file_path in self.test_files.items():
+            with self.subTest(version=version):
+                schematic = Schematic.from_file(file_path)
+                for position, block in self.sample_blocks:
+                    self.assertEqual(schematic.get_block(*position), block)
 
     def test_create_schematic(self):
         with tempfile.TemporaryDirectory() as tmp_dir:

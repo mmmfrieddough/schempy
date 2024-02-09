@@ -68,11 +68,12 @@ class Palette(Generic[T]):
 class BlockPalette(Palette[Block]):
     def set_palette(self, palette: Dict[str, int]) -> None:
         self.clear()
+        self._index_to_item = [None] * (max(palette.values()) + 1)
         # Parse each string into a Block object
         for block_str, index in palette.items():
             block = self._parse_block_str(block_str)
             self._item_to_index[block] = index
-            self._index_to_item.append(block)
+            self._index_to_item[index] = block
 
     @staticmethod
     def _parse_block_str(block_str: str) -> Block:
@@ -84,6 +85,10 @@ class BlockPalette(Palette[Block]):
                 if property_str == '':
                     continue
                 key, value = property_str.split('=')
+                if value.lower() == 'true':
+                    value = True
+                elif value.lower() == 'false':
+                    value = False
                 properties[key] = value
             return Block(id, properties)
         else:
