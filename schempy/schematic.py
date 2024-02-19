@@ -78,6 +78,22 @@ class Schematic:
         """Iterator over every block position in the schematic, yielding (x, y, z) tuples."""
         return product(range(self.width), range(self.height), range(self.length))
 
+    def get_block_palette(self) -> Dict[str, int]:
+        """Get the block palette as a dictionary of block names to palette indices."""
+        return self._block_palette.get_palette()
+
+    def get_biome_palette(self) -> Dict[str, int]:
+        """Get the biome palette as a dictionary of biome names to palette indices."""
+        return self._biome_palette.get_palette()
+
+    def get_raw_block_data(self) -> np.ndarray:
+        """Get the raw block data as a 3D numpy array in the format (y, z, x)."""
+        return self._block_data
+
+    def get_raw_biome_data(self) -> np.ndarray:
+        """Get the raw biome data as a 3D numpy array in the format (y, z, x)."""
+        return self._biome_data
+
     def _prepare_metadata(self) -> Dict:
         """Prepare the metadata for saving."""
         metadata = utils.python_to_nbt(self.metadata)
