@@ -7,10 +7,30 @@ class Block:
     id: str
     properties: Optional[Dict[str, str]] = None
 
+    @classmethod
+    def from_string(cls, block_str: str) -> "Block":
+        if "[" in block_str:
+            id, properties_str = block_str.split("[")
+            properties_str = properties_str[:-1]  # Remove trailing ]
+            properties = {}
+            for property_str in properties_str.split(","):
+                if property_str == "":
+                    continue
+                key, value = property_str.split("=")
+                if value.lower() == "true":
+                    value = True
+                elif value.lower() == "false":
+                    value = False
+                properties[key] = value
+            return cls(id, properties)
+        else:
+            return cls(block_str)
+
     def __hash__(self):
         # Compute the hash based on a tuple of the ID and sorted properties items
-        properties_items = tuple(
-            sorted(self.properties.items())) if self.properties else ()
+        properties_items = (
+            tuple(sorted(self.properties.items())) if self.properties else ()
+        )
         return hash((self.id, properties_items))
 
     def __eq__(self, other):
@@ -19,8 +39,14 @@ class Block:
         return self.id == other.id and self.properties == other.properties
 
     def __str__(self):
-        properties_str = ','.join(
-            f"{key}={str(value).lower() if isinstance(value, bool) else value}" for key, value in self.properties.items()) if self.properties else ''
+        properties_str = (
+            ",".join(
+                f"{key}={str(value).lower() if isinstance(value, bool) else value}"
+                for key, value in self.properties.items()
+            )
+            if self.properties
+            else ""
+        )
         return f"{self.id}[{properties_str}]" if properties_str else self.id
 
 
@@ -33,7 +59,7 @@ class Entity:
     properties: Dict[str, str] = None
 
 
-T = TypeVar('T')
+T = TypeVar("T")
 
 
 class Palette(Generic[T]):
@@ -71,25 +97,6 @@ class BlockPalette(Palette[Block]):
         self._index_to_item = [None] * (max(palette.values()) + 1)
         # Parse each string into a Block object
         for block_str, index in palette.items():
-            block = self._parse_block_str(block_str)
+            block = Block.from_string(block_str)
             self._item_to_index[block] = index
             self._index_to_item[index] = block
-
-    @staticmethod
-    def _parse_block_str(block_str: str) -> Block:
-        if '[' in block_str:
-            id, properties_str = block_str.split('[')
-            properties_str = properties_str[:-1]
-            properties = {}
-            for property_str in properties_str.split(','):
-                if property_str == '':
-                    continue
-                key, value = property_str.split('=')
-                if value.lower() == 'true':
-                    value = True
-                elif value.lower() == 'false':
-                    value = False
-                properties[key] = value
-            return Block(id, properties)
-        else:
-            return Block(block_str)

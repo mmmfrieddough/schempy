@@ -40,6 +40,32 @@ class TestBlock(unittest.TestCase):
         with self.assertRaises(dataclasses.FrozenInstanceError):
             block.properties = {"hardness": "2.0"}
 
+    def test_block_from_string(self):
+        # Test basic block without properties
+        block = Block.from_string("minecraft:stone")
+        self.assertEqual(block.id, "minecraft:stone")
+        self.assertIsNone(block.properties)
 
-if __name__ == '__main__':
+        # Test block with single property
+        block = Block.from_string("minecraft:stone[hardness=1.5]")
+        self.assertEqual(block.id, "minecraft:stone")
+        self.assertEqual(block.properties, {"hardness": "1.5"})
+
+        # Test block with multiple properties
+        block = Block.from_string("minecraft:stone[hardness=1.5,resistance=10]")
+        self.assertEqual(block.id, "minecraft:stone")
+        self.assertEqual(block.properties, {"hardness": "1.5", "resistance": "10"})
+
+        # Test block with boolean properties
+        block = Block.from_string("minecraft:door[powered=true,open=false]")
+        self.assertEqual(block.id, "minecraft:door")
+        self.assertEqual(block.properties, {"powered": True, "open": False})
+
+        # Test block with empty properties
+        block = Block.from_string("minecraft:stone[]")
+        self.assertEqual(block.id, "minecraft:stone")
+        self.assertEqual(block.properties, {})
+
+
+if __name__ == "__main__":
     unittest.main()
